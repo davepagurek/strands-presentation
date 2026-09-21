@@ -16,8 +16,70 @@
       <section>
         <h2>Learning graphics is hard</h2>
         <ul>
-          <li></li>
+          <li>Modern graphics means working with the GPU</li>
+          <li data-order="1">That means learning a new language to write shaders</li>
+          <li data-order="2">...and understanding how data flows through all shader pipeline stages</li>
         </ul>
+      </section>
+
+      <section>
+        <h2>Teaching graphics is hard</h2>
+        <ul>
+          <li>Modern tools are flexible but low level</li>
+          <li data-order="1">Drawing a triangle in Vulkan takes thousands of lines of boilerplate!</li>
+          <li data-order="2">To avoid being hit with all that at once, you need to make custom scaffolding</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Enter p5.strands</h2>
+        <ul>
+          <li>Our attempt to flatten the GPU learning curve</li>
+        </ul>
+        <p5 version="2.3.2" data-event="1" width="400" height="300">
+        <script>
+        let smoothOrder = 0
+        function setup() {
+          createCanvas(windowWidth, windowHeight)
+        }
+        function draw() {
+          smoothOrder = lerp(smoothOrder, order, 0.1)
+          const pts = [
+            createVector(0, height*0.8),
+          ]
+          let n = 6
+          let w = lerp(0, 250, smoothOrder)
+          let x = lerp(width*0.25, width*0.5, smoothOrder)
+          for (let i = 0; i < n; i++) {
+            pts.push(
+              createVector(
+                x+map(i, 0, n, -w/2, w/2),
+                map(i, 0, n-1, height*0.8, height*0.2)
+              ),
+              createVector(
+                x+map(i+1, 0, n, -w/2, w/2),
+                map(i, 0, n-1, height*0.8, height*0.2)
+              ),
+            )
+          }
+          pts.push(createVector(width, height*0.2))
+
+          background(255)
+          noFill()
+          stroke(255, 0, 0)
+          strokeWeight(3)
+          beginShape()
+          for (const { x, y } of pts) vertex(x, y)
+          endShape()
+
+          noStroke()
+          fill(0)
+          textSize(14)
+          textAlign(LEFT, BOTTOM)
+          text('')
+        }
+        </script>
+        </p5>
       </section>
 
       <section class="center">
@@ -26,6 +88,7 @@
     </div>
 
     <script type="text/javascript" src="slides.js"></script>
+    <script type="text/javascript" src="slides/p5.js"></script>
     <script type="text/javascript" src="slides/slide.js"></script>
   </body>
 </html>

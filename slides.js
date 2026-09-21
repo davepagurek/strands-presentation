@@ -60,6 +60,9 @@ const state = {
     const prev = this.current;
     this.current = id;
     const node = this.currentSlide().show(prev < this.current);
+    if (this.slides[prev] && this.slides[prev] !== this.slides[id]) {
+      this.slides[prev].hide();
+    }
     this.container.appendChild(node);
   },
 

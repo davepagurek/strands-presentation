@@ -3,6 +3,7 @@ class Slide {
     this.node = node;
     this.maxOrder = 0;
     this.order = 0;
+    this.mounted = false;
     Array.from(node.querySelectorAll('*')).forEach(child => {
       const order = child.getAttribute('data-order');
       if (order) {
@@ -11,7 +12,17 @@ class Slide {
 
       const disappear = child.getAttribute('data-disappear');
       if (disappear) {
-        this.maxdisappear = Math.max(this.maxdisappear, parseInt(disappear));
+        this.maxOrder = Math.max(this.maxOrder, parseInt(disappear));
+      }
+
+      const highlight = child.getAttribute('data-highlight');
+      if (highlight) {
+        this.maxOrder = Math.max(this.maxOrder, parseInt(highlight));
+      }
+
+      const event = child.getAttribute('data-event');
+      if (event) {
+        this.maxOrder = Math.max(this.maxOrder, parseInt(event));
       }
 
       if (child.classList.contains('disappearing')) {
@@ -28,10 +39,16 @@ class Slide {
         node.classList.remove('unstretched');
       }
     });
+
+    this.sketches = Array.from(node.querySelectorAll('p5')).map(child => {
+      return new P5Sketch(this, child);
+    });
   }
 
   // Resets the slide state and returns the DOMNode the slide will work in.
   show(fromStart) {
+    this.mounted = true;
+    this.sketches.forEach((sketch) => sketch.show());
     if (fromStart) {
       this.order = 0;
     } else {
@@ -40,6 +57,11 @@ class Slide {
     this.update();
 
     return this.node;
+  }
+
+  hide() {
+    this.mounted = false;
+    this.sketches.forEach((sketch) => sketch.hide());
   }
 
   // Steps the current slide. Returns `true` if the slide was able
@@ -92,6 +114,7 @@ class Slide {
         child.classList.remove('highlighted');
       }
     });
+    this.sketches.forEach((sketch) => sketch.update(this.order));
   }
 };
 
