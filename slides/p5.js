@@ -2,7 +2,14 @@ class P5Sketch {
   constructor(slide, node) {
     this.slide = slide;
     this.node = node;
-    this.code = node.querySelector('script').innerHTML;
+    const lines = node.querySelector('script').innerHTML.split('\n');
+    while (lines.length && /^\s*$/.exec(lines[0])) {
+      lines.shift();
+    }
+    while (lines.length && /^\s*$/.exec(lines.at(-1))) {
+      lines.pop();
+    }
+    this.code = lines.join('\n');
     node.innerHTML = '';
 
     this.webgpu = node.getAttribute('webgpu');
@@ -13,6 +20,20 @@ class P5Sketch {
     this.targetWidth = parseFloat(node.getAttribute('width'));
     this.targetHeight = parseFloat(node.getAttribute('height'));
     this.library = node.getAttribute('library');
+    this.showCode = node.getAttribute('showCode');
+
+    if (this.showCode) {
+      const code = document.createElement('code');
+      const spaces = /^\s*/.exec(this.code)[0].length;
+      console.log(spaces);
+      const highlightedCode = hljs.highlight(
+        this.code.split('\n').map(l => l.slice(spaces)).join('\n'),
+        { language: 'javascript' }
+      ).value
+      code.innerHTML = highlightedCode;
+      code.classList.add('code');
+      this.node.appendChild(code);
+    }
 
     this.iframe = document.createElement('iframe');
     this.iframe.setAttribute('width', this.targetWidth);

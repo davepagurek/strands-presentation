@@ -102,6 +102,10 @@ p.center, h1.center, h2.center, h3.center, h4.center {
   text-align: center;
 }
 
+h2 {
+  margin-bottom: 0;
+}
+
 .column {
   display: flex;
   flex-direction: column;
@@ -260,8 +264,9 @@ span.code {
   padding: 0.2em;
   vertical-align: middle;
   word-wrap: normal;
-  vertical-align: middle;
+  vertical-align: baseline;
   white-space: nowrap;
+  font-size: 0.8em;
 }
 span.code.highlighted {
   background-color: rgba(240,200, 0, 0.6);
@@ -320,4 +325,20 @@ span.space {
 
 iframe {
   border: 0;
+}
+
+p5 {
+  display: flex;
+  flex-direction: row;
+}
+
+p5 .code {
+  margin-right: 20px;
+  flex: 1;
+  white-space: pre;
+  color: #ccc;
+  background: #2d2d2d;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-y: auto;
 }

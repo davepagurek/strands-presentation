@@ -5,6 +5,7 @@
     </title>
     <link href="https://fonts.googleapis.com/css?family=EB+Garamond:400,400i,700" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="https://www.davepagurek.com/scripts/highlight/styles/base16/decaf.min.css">
   </head>
   <body>
     <div id="slides" class="loading">
@@ -75,8 +76,157 @@
           noStroke()
           fill(0)
           textSize(14)
-          textAlign(LEFT, BOTTOM)
-          text('')
+          textAlign(CENTER, BOTTOM)
+          text('Output level →', width/2, height)
+          textAlign(LEFT, CENTER)
+          text('Effort ↑', 0, height/2)
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>No new language, just JavaScript</p>
+        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <script>
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          let myFilter = buildFilterShader(gradient);
+          filter(myFilter);
+        }
+
+        function gradient() {
+          filterColor.begin();
+          filterColor.set([1, 0, 0, 1]);
+          filterColor.end();
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>Focus on parallel: it runs on every pixel at once</p>
+        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <script>
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          let myFilter = buildFilterShader(gradient);
+          filter(myFilter);
+        }
+
+        function gradient() {
+          filterColor.begin();
+          filterColor.set([
+            filterColor.texCoord.x,
+            filterColor.texCoord.y,
+            0,
+            1
+          ]);
+          filterColor.end();
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>Use p5 things you know like <span class="code">noise</span></p>
+        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <script>
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          let myFilter = buildFilterShader(gradient);
+          filter(myFilter);
+        }
+
+        function gradient() {
+          filterColor.begin();
+          let val = noise(filterColor.texCoord);
+          filterColor.set([val, val, val, 1]);
+          filterColor.end();
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p><span class="code">millis()</span> and <span class="code">frameCount</span> work!</p>
+        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <script>
+        let myFilter;
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          myFilter = buildFilterShader(gradient);
+        }
+
+        function gradient() {
+          filterColor.begin();
+          let val = noise(
+            filterColor.texCoord.x, filterColor.texCoord.y, millis() * 0.0005
+          );
+          filterColor.set([val, val, val, 1]);
+          filterColor.end();
+        }
+
+        function draw() {
+          filter(myFilter);
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>Same with <span class="code">color()</span> and <span class="code">lerp()</span>!</p>
+        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <script>
+        let myFilter;
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          myFilter = buildFilterShader(gradient);
+        }
+
+        function gradient() {
+          filterColor.begin();
+          filterColor.set(lerp(
+            color('red'),
+            color('blue'),
+            sin(filterColor.texCoord.x*15 + millis()*0.004)/2+0.5
+          ));
+          filterColor.end();
+        }
+
+        function draw() {
+          filter(myFilter);
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>Same with <span class="code">color()</span> and <span class="code">lerp()</span>!</p>
+        <p5 version="2.3.2" width="200" height="250" showCode="true">
+        <script>
+        let myFilter;
+        let frequency;
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          frequency = createSlider(1, 100, 30, 0.1);
+          myFilter = buildFilterShader(gradient);
+        }
+
+        function gradient() {
+          // Pass in slider value
+          let xScale = uniformFloat(() => frequency.value());
+          filterColor.begin();
+          filterColor.set(lerp(
+            color('red'),
+            color('blue'),
+            sin(filterColor.texCoord.x*xScale + millis()*0.004)/2+0.5
+          ));
+          filterColor.end();
+        }
+
+        function draw() {
+          filter(myFilter);
         }
         </script>
         </p5>
@@ -88,6 +238,7 @@
     </div>
 
     <script type="text/javascript" src="slides.js"></script>
+    <script type="text/javascript" src="https://www.davepagurek.com/scripts/highlight/highlight.min.js"></script>
     <script type="text/javascript" src="slides/p5.js"></script>
     <script type="text/javascript" src="slides/slide.js"></script>
   </body>
