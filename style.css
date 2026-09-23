@@ -63,6 +63,7 @@ section {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  max-height: 100%;
 }
 
 img, svg.expand {
@@ -341,6 +342,8 @@ iframe {
 p5 {
   display: flex;
   flex-direction: row;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 p5 .code {

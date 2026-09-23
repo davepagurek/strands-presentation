@@ -33,7 +33,6 @@ class P5Sketch {
         .replace(/<span class="hljs-comment">\/\*(&lt;(\/)?span[^>]*&gt;)\*\/<\/span>/g, (match, inner) => {
           return unescapeHTML(inner);
         });
-      console.log(highlightedCode);
       code.innerHTML = highlightedCode;
       code.classList.add('code');
       this.node.appendChild(code);

@@ -39,7 +39,7 @@
         <ul>
           <li>Our attempt to flatten the GPU learning curve</li>
         </ul>
-        <p5 version="2.3.2" data-event="1" width="400" height="300">
+        <p5 version="2.3.3" data-event="1" width="400" height="300">
         <script type="text/p5js">
         let smoothOrder = 0
         function setup() {
@@ -89,7 +89,7 @@
 
       <section>
         <p>No new language, just JavaScript</p>
-        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <p5 version="2.3.3" width="200" height="200" showCode="true">
         <script type="text/p5js">
         function setup() {
           createCanvas(200, 200, WEBGL);
@@ -108,7 +108,7 @@
 
       <section>
         <p>Focus on parallel: it runs on every pixel at once</p>
-        <p5 version="2.3.2" width="200" height="200" showCode="true" data-event="1">
+        <p5 version="2.3.3" width="200" height="200" showCode="true" data-event="1">
         <script type="text/p5js">
         function setup() {
           createCanvas(200, 200, WEBGL);
@@ -132,7 +132,7 @@
 
       <section>
         <p>Use p5 things you know like <span class="code">noise</span></p>
-        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <p5 version="2.3.3" width="200" height="200" showCode="true">
         <script type="text/p5js">
         function setup() {
           createCanvas(200, 200, WEBGL);
@@ -152,7 +152,7 @@
 
       <section>
         <p><span class="code">millis()</span> and <span class="code">frameCount</span> work!</p>
-        <p5 version="2.3.2" width="200" height="200" showCode="true" data-event="1">
+        <p5 version="2.3.3" width="200" height="200" showCode="true" data-event="1">
         <script type="text/p5js">
         let myFilter;
         function setup() {
@@ -178,7 +178,7 @@
 
       <section>
         <p>Same with <span class="code">color()</span> and <span class="code">lerp()</span>!</p>
-        <p5 version="2.3.2" width="200" height="200" showCode="true">
+        <p5 version="2.3.3" width="200" height="200" showCode="true">
         <script type="text/p5js">
         let myFilter;
         function setup() {
@@ -205,7 +205,7 @@
 
       <section>
         <p>So far all uniforms have been implicit, but you can introduce them to pass in data</p>
-        <p5 version="2.3.2" width="200" height="250" showCode="true" data-event="4">
+        <p5 version="2.3.3" width="200" height="250" showCode="true" data-event="4">
         <script type="text/p5js">
         let myFilter;
         /*<span data-highlight="1">*/let frequency;/*</span>*/
@@ -236,8 +236,8 @@
       </section>
 
       <section>
-        <p>So far all uniforms have been implicit, but you can introduce them to pass in data</p>
-        <p5 version="2.3.2" width="200" height="250" showCode="true">
+        <p>You can use a function to auto-update</p>
+        <p5 version="2.3.3" width="200" height="250" showCode="true">
         <script type="text/p5js">
         let myFilter;
         let frequency;
@@ -262,6 +262,102 @@
         function draw() {
           filter(myFilter);
         }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>Introduce the pipeline incrementally: you can edit vertex positions too</p>
+        <p5 version="2.3.3" width="200" height="250" showCode="true" data-event="3">
+        <script type="text/p5js">
+        let movement;
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          movement = /*<span data-highlight="1">*/buildMaterialShader(wiggle);/*</span>*/
+        }
+
+        function wiggle() {
+          worldInputs.begin();
+          /*<span data-highlight="2">*/worldInputs.position/*</span>*/.y += 10 * sin(
+            millis() * 0.005 + worldInputs.position.x * 0.1
+          );
+          worldInputs.end();
+        }
+
+        function draw() {
+          background('white');
+          noStroke();
+          /*<span data-highlight="3">*/lights();/*</span>*/
+          /*<span data-highlight="3">*/fill('red');/*</span>*/
+          shader(movement);
+          sphere(50);
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>Multiple instances can run in parallel too</p>
+        <p5 version="c119cb9" width="200" height="250" showCode="true" data-event="2" webgpu="true">
+        <script type="text/p5js">
+        let movement;
+        async function setup() {
+          await createCanvas(200, 200, WEBGPU);
+          movement = buildMaterialShader(wiggle);
+        }
+
+        function wiggle() {
+          worldInputs.begin();
+          worldInputs.position.x += /*<span data-highlight="1">*/instanceIndex/*</span>*/ * 30 - 90;
+          worldInputs.position.y += 40 * sin(millis() * 0.005 + /*<span data-highlight="1">*/instanceIndex/*</span>*/);
+          worldInputs.end();
+        }
+
+        function draw() {
+          background('white');
+          noStroke();
+          lights();
+          fill('red');
+          shader(movement);
+          /*<span data-highlight="2">*/instances(7)/*</span>*/.sphere(10);
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>In WebGPU you can access storage arrays!</p>
+        <p5 version="c119cb9" width="200" height="250" showCode="true" data-event="3" webgpu="true">
+        <script type="text/p5js">
+let particles;
+let particlesShader;
+let instance;
+/*<span data-highlight="1">*/async/*</span>*/ function setup() {
+  /*<span data-highlight="1">*/await/*</span>*/ createCanvas(200, 200, WEBGPU);
+  particles = /*<span data-highlight="2">*/createStorage/*</span>*/([
+    { position: createVector(-50, -20, 0) },
+    { position: createVector(10, -80, 0) },
+    { position: createVector(50, 50, 0) }
+  ]);
+  particlesShader = buildMaterialShader(drawParticles);
+}
+
+function drawParticles() {
+  const data = /*<span data-highlight="3">*/uniformStorage(particles);/*</span>*/
+
+  worldInputs.begin();
+  worldInputs.position += data[instanceID()].position;
+  worldInputs.end();
+}
+
+function draw() {
+  background('white');
+  noStroke();
+  lights();
+  fill('red');
+  shader(particlesShader);
+  instances(3).sphere(10);
+}
         </script>
         </p5>
       </section>
