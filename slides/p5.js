@@ -25,11 +25,15 @@ class P5Sketch {
     if (this.showCode) {
       const code = document.createElement('code');
       const spaces = /^\s*/.exec(this.code)[0].length;
-      console.log(spaces);
       const highlightedCode = hljs.highlight(
         this.code.split('\n').map(l => l.slice(spaces)).join('\n'),
         { language: 'javascript' }
-      ).value
+      )
+        .value
+        .replace(/<span class="hljs-comment">\/\*(&lt;(\/)?span[^>]*&gt;)\*\/<\/span>/g, (match, inner) => {
+          return unescapeHTML(inner);
+        });
+      console.log(highlightedCode);
       code.innerHTML = highlightedCode;
       code.classList.add('code');
       this.node.appendChild(code);
@@ -80,4 +84,10 @@ ${this.code}
   hide() {
     this.iframe.srcdoc = '';
   }
+}
+
+function unescapeHTML(htmlString) {
+  const div = document.createElement('div');
+  div.innerHTML = htmlString;
+  return div.textContent || div.innerText || '';
 }

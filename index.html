@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <title>
       p5.strands
     </title>
@@ -38,7 +40,7 @@
           <li>Our attempt to flatten the GPU learning curve</li>
         </ul>
         <p5 version="2.3.2" data-event="1" width="400" height="300">
-        <script>
+        <script type="text/p5js">
         let smoothOrder = 0
         function setup() {
           createCanvas(windowWidth, windowHeight)
@@ -88,7 +90,7 @@
       <section>
         <p>No new language, just JavaScript</p>
         <p5 version="2.3.2" width="200" height="200" showCode="true">
-        <script>
+        <script type="text/p5js">
         function setup() {
           createCanvas(200, 200, WEBGL);
           let myFilter = buildFilterShader(gradient);
@@ -106,8 +108,8 @@
 
       <section>
         <p>Focus on parallel: it runs on every pixel at once</p>
-        <p5 version="2.3.2" width="200" height="200" showCode="true">
-        <script>
+        <p5 version="2.3.2" width="200" height="200" showCode="true" data-event="1">
+        <script type="text/p5js">
         function setup() {
           createCanvas(200, 200, WEBGL);
           let myFilter = buildFilterShader(gradient);
@@ -117,7 +119,7 @@
         function gradient() {
           filterColor.begin();
           filterColor.set([
-            filterColor.texCoord.x,
+            /*<span data-highlight="1">*/filterColor.texCoord/*</span>*/.x,
             filterColor.texCoord.y,
             0,
             1
@@ -131,7 +133,7 @@
       <section>
         <p>Use p5 things you know like <span class="code">noise</span></p>
         <p5 version="2.3.2" width="200" height="200" showCode="true">
-        <script>
+        <script type="text/p5js">
         function setup() {
           createCanvas(200, 200, WEBGL);
           let myFilter = buildFilterShader(gradient);
@@ -150,8 +152,8 @@
 
       <section>
         <p><span class="code">millis()</span> and <span class="code">frameCount</span> work!</p>
-        <p5 version="2.3.2" width="200" height="200" showCode="true">
-        <script>
+        <p5 version="2.3.2" width="200" height="200" showCode="true" data-event="1">
+        <script type="text/p5js">
         let myFilter;
         function setup() {
           createCanvas(200, 200, WEBGL);
@@ -161,7 +163,7 @@
         function gradient() {
           filterColor.begin();
           let val = noise(
-            filterColor.texCoord.x, filterColor.texCoord.y, millis() * 0.0005
+            filterColor.texCoord.x, filterColor.texCoord.y, /*<span data-highlight="1">*/millis() * 0.0005/*</span>*/
           );
           filterColor.set([val, val, val, 1]);
           filterColor.end();
@@ -177,7 +179,7 @@
       <section>
         <p>Same with <span class="code">color()</span> and <span class="code">lerp()</span>!</p>
         <p5 version="2.3.2" width="200" height="200" showCode="true">
-        <script>
+        <script type="text/p5js">
         let myFilter;
         function setup() {
           createCanvas(200, 200, WEBGL);
@@ -202,9 +204,41 @@
       </section>
 
       <section>
-        <p>Same with <span class="code">color()</span> and <span class="code">lerp()</span>!</p>
+        <p>So far all uniforms have been implicit, but you can introduce them to pass in data</p>
+        <p5 version="2.3.2" width="200" height="250" showCode="true" data-event="4">
+        <script type="text/p5js">
+        let myFilter;
+        /*<span data-highlight="1">*/let frequency;/*</span>*/
+        function setup() {
+          createCanvas(200, 200, WEBGL);
+          /*<span data-highlight="2">*/frequency = createSlider(1, 100, 30, 0.1);/*</span>*/
+          myFilter = buildFilterShader(gradient);
+        }
+
+        function gradient() {
+          // Pass in slider value
+          /*<span data-highlight="3">*/let xScale = uniformFloat();/*</span>*/
+          filterColor.begin();
+          filterColor.set(lerp(
+            color('red'),
+            color('blue'),
+            sin(filterColor.texCoord.x*xScale + millis()*0.004)/2+0.5
+          ));
+          filterColor.end();
+        }
+
+        function draw() {
+          /*<span data-highlight="4">*/myFilter.setUniform('xScale', frequency.value());/*</span>*/
+          filter(myFilter);
+        }
+        </script>
+        </p5>
+      </section>
+
+      <section>
+        <p>So far all uniforms have been implicit, but you can introduce them to pass in data</p>
         <p5 version="2.3.2" width="200" height="250" showCode="true">
-        <script>
+        <script type="text/p5js">
         let myFilter;
         let frequency;
         function setup() {
@@ -215,7 +249,7 @@
 
         function gradient() {
           // Pass in slider value
-          let xScale = uniformFloat(() => frequency.value());
+          /*<span data-highlight="0">*/let xScale = uniformFloat(() => frequency.value());/*</span>*/
           filterColor.begin();
           filterColor.set(lerp(
             color('red'),

@@ -242,6 +242,17 @@ path.highlighted, line.highlighted {
 span.highlighted {
   color: #f7c634;
 }
+.code span.highlighted {
+  background-color: #f7c634 !important;
+  color: #000 !important;
+  padding: 3px;
+  margin: -3px;
+  display: inline-block;
+  border-radius: 4px;
+}
+.code span.highlighted * {
+  color: #000 !important;
+}
 table {
   border-spacing: 0;
   margin: 0 auto;
