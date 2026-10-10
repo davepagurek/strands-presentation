@@ -1,3 +1,5 @@
-# dont-cross-me-presentation
+# strands-presentation
 
-I gave a talk about my weird band. Look at the slides here: https://davepagurek.github.io/dont-cross-me-presentation
+A talk for the Processing Foundation's <a href="https://openassembly.processingfoundation.org/#community-support">Open Assembly 2026</a> about development updates to p5.strands.
+
+View it live at https://davepagurek.github.io/strands-presentation
