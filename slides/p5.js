@@ -39,6 +39,7 @@ class P5Sketch {
     }
 
     this.iframe = document.createElement('iframe');
+    this.iframe.setAttribute('style', 'margin: 0 auto');
     this.iframe.setAttribute('width', this.targetWidth);
     this.iframe.setAttribute('height', this.targetHeight);
     this.iframe.setAttribute('border', 0);
